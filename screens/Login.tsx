@@ -1,0 +1,99 @@
+import * as React from 'react'
+import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth'
+import FirebaseApp from '../firebase'
+import { AuthContext } from '../state/contextProvider'
+
+const auth = getAuth(FirebaseApp)
+const Login = ({navigation}: {navigation: any}) => {
+    const {signIn} = React.useContext(AuthContext);
+    const [username, setUsername] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [errorMessage, setErrorMessage] = React.useState("")
+
+
+    const handleRegister = () => {
+        navigation.navigate('Register');
+    }
+
+    return (
+        <KeyboardAvoidingView style = {styles.container}>
+            <Text style = {styles.titletext}>
+                wear your jacket!
+            </Text>
+            <TextInput
+            placeholder = "your email"
+            value = {username}
+            onChangeText = {(value) => setUsername(value)}
+            style = {styles.textField}
+            />
+            <TextInput
+            placeholder = "your password"
+            value = {password}
+            onChangeText = {(value) => setPassword(value)}
+            secureTextEntry
+            style = {styles.textField}
+            />
+            {errorMessage ? 
+            <Text>
+                {errorMessage}
+            </Text>
+                : null}
+            <Pressable
+                onPress = {() =>signIn({username, password})}
+                style = {styles.login}
+                hitSlop = {{top: 10, bottom: 10, left: 10, right: 10}}
+            >
+                <Text style = {styles.text}>let me in!</Text>
+            </Pressable>
+            <Pressable
+                onPress = {handleRegister}
+                style = {[styles.login, {backgroundColor: 'orange'}]}
+                hitSlop = {{top: 10, bottom: 10, left: 10, right: 10}}
+            >
+                <Text style = {styles.text}>get started!</Text>
+            </Pressable>
+            
+        </KeyboardAvoidingView>
+    )
+}
+
+export default Login
+
+const styles = StyleSheet.create({
+    textField: {
+        width: '80%',
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        backgroundColor: 'white',
+        marginTop: '2%',
+        borderRadius: 8,
+        fontSize: 18
+        
+    },
+    titletext: {
+        fontSize: 40,
+        fontFamily: 'Kalam_400Regular',
+        color: '#2c6ac7'
+    },
+    text: {
+        fontSize: 22,
+
+    },
+    login: {
+        paddingHorizontal:15,
+        paddingVertical: 2,
+        backgroundColor: 'lightgreen',
+        height:'8%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: '2%',
+        width: '60%',
+        borderRadius: 8
+    },
+    container: {
+        flex: 1, 
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+})
