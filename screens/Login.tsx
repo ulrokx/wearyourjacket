@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth'
-import FirebaseApp from '../firebase'
+import {FirebaseApp} from '../firebase'
 import { AuthContext } from '../state/contextProvider'
 
 const auth = getAuth(FirebaseApp)
 const Login = ({navigation}: {navigation: any}) => {
-    const {signIn} = React.useContext(AuthContext);
+    const [{signIn, asGuest}] = React.useContext(AuthContext);
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [errorMessage, setErrorMessage] = React.useState("")
@@ -16,6 +16,9 @@ const Login = ({navigation}: {navigation: any}) => {
         navigation.navigate('Register');
     }
 
+    const handleGuest = () => {
+       asGuest(); 
+    }
     return (
         <KeyboardAvoidingView style = {styles.container}>
             <Text style = {styles.titletext}>
@@ -53,6 +56,13 @@ const Login = ({navigation}: {navigation: any}) => {
             >
                 <Text style = {styles.text}>get started!</Text>
             </Pressable>
+            <Pressable
+                onPress = {() => asGuest()}
+                style = {[styles.login, {backgroundColor: 'lightblue'}]}
+                hitSlop = {{top: 10, bottom: 10, left: 10, right: 10}}
+            >
+                <Text style = {styles.text}>continue as guest</Text>
+            </Pressable>
             
         </KeyboardAvoidingView>
     )
@@ -68,16 +78,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         marginTop: '2%',
         borderRadius: 8,
-        fontSize: 18
+        fontSize: 24
         
     },
     titletext: {
-        fontSize: 40,
+        fontSize: 60,
         fontFamily: 'Kalam_400Regular',
         color: '#2c6ac7'
     },
     text: {
-        fontSize: 22,
+        fontSize: 30,
 
     },
     login: {
@@ -87,7 +97,7 @@ const styles = StyleSheet.create({
         height:'8%',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: '2%',
+        marginTop: '6%',
         width: '60%',
         borderRadius: 8
     },

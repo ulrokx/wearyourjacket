@@ -30,7 +30,8 @@ export default function MinMax({ dUnit, onUnitChange }) {
                 <ActivityIndicator />
             ) : (
                 <>
-                    <Text style={styles.text}>
+                    <Text style={styles.text}
+                    adjustsFontSizeToFit>
                         {dUnit === "F"
                             ? minMax[0]
                             : ((minMax[0] - 32) * (5 / 9)).toFixed(1)}
@@ -41,7 +42,7 @@ export default function MinMax({ dUnit, onUnitChange }) {
                         hitSlop = {{top: 15, bottom: 15, left: 15, right: 15}}
                         style={({ pressed }) => [
                             {
-                                backgroundColor: pressed ? "lightblue" : "lightblue",
+                                backgroundColor: pressed ? "darkblue" : "lightblue",
                             },
                             styles.button,
                         ]}
@@ -53,7 +54,8 @@ export default function MinMax({ dUnit, onUnitChange }) {
                             color="black"
                         />
                     </Pressable>
-                    <Text style={styles.text}>
+                    <Text style={styles.text}
+                    adjustsFontSizeToFit>
                         {dUnit === "F"
                             ? minMax[1]
                             : ((minMax[1] - 32) * (5 / 9)).toFixed(1)}
@@ -75,7 +77,6 @@ const styles = StyleSheet.create({
     wrapper: {
         alignItems: "center",
         justifyContent: "center",
-        marginVertical: "20%",
     },
     button: {
         borderRadius: 8,

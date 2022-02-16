@@ -2,19 +2,23 @@ import React, { useEffect, useState } from "react";
 import {
     KeyboardAvoidingView,
     Pressable,
+    SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
     View,
 } from "react-native";
 import EmailValidator from 'email-validator'
-import FirebaseApp from "../firebase";
+import {FirebaseApp} from "../firebase";
 import { getAuth } from "@firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { onRegister } from "../api/firebasefunctions";
+import { AuthContext } from "../state/contextProvider";
+import BackButton from "../components/BackButton";
+import { SafeAreaFrameContext } from "react-native-safe-area-context";
 
 const auth = getAuth(FirebaseApp);
-const Register = () => {
+const Register = ({navigation}) => {
+    const {signUp} = React.useContext(AuthContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [retype, setRetype] = useState("");
@@ -25,6 +29,7 @@ const Register = () => {
     const [emailgood, setEmailgood] = useState(false);
     const [zipcodegood, setZipcodegood] = useState(false);
     const [passwordGood, setPasswordGood] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const nameReg = new RegExp("^[A-Za-z]*$");
 
     useEffect(() => {
@@ -38,18 +43,28 @@ const Register = () => {
         }
     }, [retype, password])
 
-    const handleRegister = () => {
-        console.log("here")
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log(errorMessage);
-                console.log(errorCode)
-            });
+    const checkInputs = () => {
+        setErrorMessage("");
+        if(!passwordGood) {
+            setErrorMessage((m) => m + "Password must be at least 8 characters long.\n");
+        }
+        if(!namegood) {
+            setErrorMessage((m) => m + "Your nickname cannot contain spaces or symbols.\n");
+        }
+        if(!zipcodegood) {
+            setErrorMessage((m) => m + "Invalid zipcode. (5 digit zipcode needed)\n");
+        }
+        if(!emailgood) {
+            setErrorMessage((m) => m + "Invalid email address.\n");
+        }
+        if(!matching) {
+            setErrorMessage((m) => m + "Passwords must match!\n");
+        }
+        if(matching && passwordGood && namegood && zipcodegood && emailgood) {
+            signUp(email, password, name, zipcode);
+        }
+        
+
     };
 
     const onNameChanged = (value: string) => {
@@ -103,12 +118,18 @@ const Register = () => {
     }
 
     return (
+        <SafeAreaView style = {{flex:1}}>
         <KeyboardAvoidingView style={styles.container}>
+            <BackButton
+            onPress={() => navigation.navigate("Login")}
+        
+            />
             <Text style={styles.titleText}>let's get started!</Text>
             <TextInput
                 placeholder="your nickname"
                 value={name}
                 onChangeText={(value) => onNameChanged(value)}
+                textContentType = 'name'
                 style={[
                     styles.textField,
                     namegood ? styles.fieldGood : styles.fieldBad,
@@ -118,6 +139,7 @@ const Register = () => {
                 placeholder="your email"
                 value={email}
                 onChangeText={(value) => onEmailChanged(value)}
+                textContentType = 'emailAddress'
                 style={[
                     styles.textField,
                     emailgood ? styles.fieldGood : styles.fieldBad,
@@ -129,6 +151,7 @@ const Register = () => {
                 value={password}
                 onChangeText={(value) => onPasswordChanged(value)}
                 secureTextEntry
+                textContentType = 'newPassword'
                 style={[
                     styles.textField,
                     passwordGood ? styles.fieldGood : styles.fieldBad,
@@ -139,6 +162,7 @@ const Register = () => {
                 value={retype}
                 onChangeText={(value) => onRePassChanged(value)}
                 secureTextEntry
+                textContentType = 'newPassword'
                 style={[
                     styles.textField,
                     matching ? styles.fieldGood : styles.fieldBad,
@@ -148,22 +172,27 @@ const Register = () => {
                 placeholder="your primary zipcode"
                 value={zipcode}
                 onChangeText={(value) => onZipChanged(value)}
+                keyboardType = 'number-pad'
+                textContentType = 'postalCode'
                 style={[
                     styles.textField,
                     zipcodegood ? styles.fieldGood : styles.fieldBad,
                 ]}
+                
             />
-
+            {errorMessage ? <Text style = {styles.errorMessage} >{errorMessage}</Text> : null}
             <Pressable
-                onPress={() => onRegister(email,password,name,zipcode)}
+                onPress={() => checkInputs()}
                 style={[styles.login]}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
                 <Text>beam me up mom!</Text>
             </Pressable>
         </KeyboardAvoidingView>
+        </SafeAreaView>
     );
-};
+}
+
 
 export default Register;
 const styles = StyleSheet.create({
@@ -184,7 +213,7 @@ const styles = StyleSheet.create({
         borderColor: "#e63232",
     },
     text: {
-        fontSize: 22,
+        fontSize: 35,
     },
     titleText: {
         fontSize: 32,
@@ -200,10 +229,16 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginTop: "8%",
         width: "60%",
+        borderRadius: 8
     },
     container: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-    },
+    }, 
+    errorMessage: {
+        fontSize: 14,
+        color: 'red',
+        fontFamily: "Kalam_400Regular"
+    }
 });

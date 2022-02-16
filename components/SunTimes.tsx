@@ -1,6 +1,7 @@
 import React, { SetStateAction, useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { StyleSheet, ActivityIndicator, FlatList, Text, View } from "react-native";
 import getSunTimes from "../api/getSunTimes";
+import { Feather } from '@expo/vector-icons'
 export default function SunTimes() {
   const [isLoading, setLoading] = useState(true);
   const [sunTimes, setSunTimes] = useState([]);
@@ -16,15 +17,33 @@ export default function SunTimes() {
   });
 
   return (
-    <View style={{ flex: 1}}>
+    <View style={styles.container}>
       {isLoading ? (
         <ActivityIndicator />
       ) : (
         <>
-          <Text>{sunTimes[0]}</Text>
-          <Text>{sunTimes[1]}</Text>
+        <Feather name="sunrise" size={34} color="black"/>
+        <Text style = {styles.text}>{sunTimes[0]}</Text>
+        <Feather name="sunset" size={34} color="black"/>
+        <Text style = {styles.text}>{sunTimes[1]}</Text>
         </>
       )}
     </View>
   );
 }
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 24,
+    paddingHorizontal: 15,
+    fontFamily: 'Rubik_300Light'
+  },
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+
+  }
+}
+)

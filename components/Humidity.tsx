@@ -2,6 +2,7 @@ import React, { SetStateAction, useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import getHumidity from '../api/getHumidity';
 export default function Humidity () {
+  const controller = new AbortController();
   const [isLoading, setLoading] = useState(true);
   const [humidity, setHumidity] = useState([]);
   useEffect(() => {
@@ -13,6 +14,9 @@ export default function Humidity () {
       setHumidity(temp);
     }
     grabHumidity();
+    return(() => {
+      controller.abort();
+    })
   })  
 
   

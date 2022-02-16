@@ -21,12 +21,14 @@ const [temperature, setTemperature] = useState(0);
     <View style={styles.wrapper}>
       {isLoading ? <ActivityIndicator/> : (
         <>
-        <Text style ={styles.temperature}>{
+        <Text style ={styles.temperature}
+        adjustsFontSizeToFit>{
         (dUnit === "F")
         ? temperature
         : ((temperature - 32) * (5/9)).toFixed(1) 
         }</Text>
-        <Text style = {styles.degree}>°{dUnit}</Text>
+        <Text style = {styles.degree}
+        adjustsFontSizeToFit>°{dUnit}</Text>
         </>
       )}
     </View>
@@ -37,7 +39,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     alignItems: 'flex-start',
-    paddingTop: 40,
+    marginTop: '2%',
     justifyContent: 'center',
    flexDirection: 'row',
    

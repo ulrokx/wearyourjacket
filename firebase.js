@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import {initializeApp} from 'firebase/app'
+import {getFirestore} from 'firebase/firestore'
 import 'firebase/auth';
 import Constants from 'expo-constants';
 
@@ -16,10 +17,11 @@ const firebaseConfig = {
 let FirebaseApp;
 
 console.log(firebaseConfig.apiKey)
-try {
+try { // it just works okay
   FirebaseApp = getApp();
 } catch (e) {
   FirebaseApp = initializeApp(firebaseConfig);
 }
+export const db = getFirestore();
+export {FirebaseApp};
 
-export default FirebaseApp;

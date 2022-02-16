@@ -1,5 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import * as Firestore from 'firebase/firestore'
+import {db, FirebaseApp} from '../firebase'
+import {AuthContext} from '../state/contextProvider'
 import { StyleSheet, Text, View } from "react-native";
+import {userInfo} from '../state/statestore'
 
 const Greeting = () => {
     const converter = require("number-to-words");
@@ -11,6 +15,7 @@ const Greeting = () => {
         m: new Date().getMinutes(),
         h: new Date().getHours()
     });
+    const [user, setUser] = useState("");
     useEffect(() => {
         const interval = setInterval(() => {
             setTime({
@@ -64,17 +69,25 @@ const Greeting = () => {
         };
     });
 
+
+
     return (
       <View>
         <View style={{ flexDirection: "row" }}>
             <Text style = {[styles.greeting, styles. standard]}>{timeText}</Text>
+         //   <Text style = {[styles.greeting, styles.standard]}></Text>
         </View>
         <View style={{ flexDirection: "row", flexWrap: 'wrap'}}>
-            <Text style = {styles.standard}>{"It is "}</Text>
-            <Text style = {[styles.standard,styles.minute]}>{minute}</Text>
-            <Text style = {styles.standard}>{phrase}</Text>
-            <Text style = {[styles.standard, styles.hour]}>{hour}</Text>
-            <Text style = {styles.standard}>.</Text>
+            <Text style = {styles.standard}
+            adjustsFontSizeToFit>{"It is "}</Text>
+            <Text style = {[styles.standard,styles.minute]}
+            adjustsFontSizeToFit>{minute}</Text>
+            <Text style = {styles.standard}
+            adjustsFontSizeToFit>{phrase}</Text>
+            <Text style = {[styles.standard, styles.hour]}
+            adjustsFontSizeToFit>{hour}</Text>
+            <Text style = {styles.standard}
+            adjustsFontSizeToFit>.</Text>
         </View>
       </View>
     );
